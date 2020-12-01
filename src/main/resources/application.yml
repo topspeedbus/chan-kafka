@@ -1,0 +1,32 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: kafka-test
+  kafka:
+    bootstrap-servers: 120.77.156.193:9092
+    producer:
+      retries: 0
+      #当消息积累到这个数值后提交给broker
+      batch-size: 16384
+
+    consumer:
+      group-id: chan-test-group
+      # 当kafka中没有初始offset或offset超出范围时将自动重置offset
+      # earliest:重置为分区中最小的offset;
+      # latest:重置为分区中最新的offset(消费分区中新产生的数据);
+      # none:只要有一个分区不存在已提交的offset,就抛出异常;
+      auto-offset-reset: latest
+      # 提交offset延时(接收到消息后多久提交offset)
+#      auto-commit-interval:
+      enable-auto-commit: true
+#      heartbeat-interval: 12000
+
+
+    # 消费端监听的topic不存在时，项目启动会报错(关掉)
+    listener:
+      missing-topics-fatal: false
+      #caution: 这个打开会引发消息被批量连接后提取，导致消费者无法解析字符串报错
+#      type: batch
+#      idle-between-polls:
+      ack-mode: batch
